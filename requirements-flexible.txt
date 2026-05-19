@@ -1,0 +1,13 @@
+# Core ML (versiones compatibles con wheels precompilados)
+scikit-learn==1.5.1
+joblib==1.4.2
+numpy==1.23.5
+pandas==1.5.3
+
+# API Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==1.10.13
+ipykernel
+# Monitoring
+prometheus-client==0.19.0

@@ -1,0 +1,26 @@
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+.DS_Store
+Thumbs.db
+
+# Local Docker and IDE artifacts
+.vscode/
+.idea/
+
+# Optional local data and logs
+*.log
+tmp/
+temp/
+
+# Python packaging
+build/
+dist/
+*.egg-info/

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Heart Disease API - UI</title>
+    <style>
+      body{font-family:Inter, Arial, sans-serif;max-width:900px;margin:24px auto;color:#111}
+      label{display:block;margin-top:12px}
+      input,select{width:100%;padding:8px;margin-top:4px}
+      button{margin-top:12px;padding:10px 16px}
+      pre{background:#f6f8fa;padding:12px;border-radius:6px;overflow:auto}
+      .row{display:flex;gap:12px}
+      .col{flex:1}
+    </style>
+  </head>
+  <body>
+    <h1>Heart Disease API — Interfaz</h1>
+    <p>Rellena los datos del paciente y pulsa <strong>Predict</strong>.</p>
+
+    <form id="form">
+      <div class="row">
+        <div class="col">
+          <label>Age<input name="age" type="number" value="54" min="1" max="120"/></label>
+        </div>
+        <div class="col">
+          <label>Sex<select name="sex"><option value="1">Male</option><option value="0">Female</option></select></label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col"><label>Chest Pain (1-4)<input name="chest_pain" type="number" value="3" min="1" max="4"/></label></div>
+        <div class="col"><label>Rest BP<input name="rest_blood_pressure" type="number" value="130" min="50" max="250"/></label></div>
+      </div>
+
+      <div class="row">
+        <div class="col"><label>Colesterol<input name="cholesterol" type="number" value="250" min="100" max="600"/></label></div>
+        <div class="col"><label>Fasting BS<select name="fasting_blood_sugar"><option value="0">0</option><option value="1">1</option></select></label></div>
+      </div>
+
+      <div class="row">
+        <div class="col"><label>Rest ECG<select name="rest_ecg"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></label></div>
+        <div class="col"><label>Max HR<input name="max_heart_rate" type="number" value="150" min="60" max="220"/></label></div>
+      </div>
+
+      <div class="row">
+        <div class="col"><label>Exercise Angina<select name="exercise_angina"><option value="0">0</option><option value="1">1</option></select></label></div>
+        <div class="col"><label>Oldpeak<input name="oldpeak" step="0.1" type="number" value="1.2" min="0" max="10"/></label></div>
+      </div>
+
+      <div class="row">
+        <div class="col"><label>Slope<select name="slope"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+        <div class="col"><label>Vessels<input name="vessels" type="number" value="0" min="0" max="3"/></label></div>
+      </div>
+
+      <label>Thal<select name="thal"><option value="3">3</option><option value="6">6</option><option value="7">7</option></select></label>
+
+      <button id="btn">Predict</button>
+    </form>
+
+    <h3>Resultado</h3>
+    <pre id="result">—</pre>
+
+    <script>
+      const form = document.getElementById('form');
+      const result = document.getElementById('result');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        for (const k in data) {
+          const el = form.elements[k];
+          if (el.type === 'number' || el.type === 'range') data[k] = Number(data[k]);
+        }
+        result.textContent = 'Enviando...';
+        try {
+          const r = await fetch('/predict', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+          });
+          const j = await r.json();
+          result.textContent = JSON.stringify(j, null, 2);
+        } catch (err) {
+          result.textContent = 'Error: ' + err;
+        }
+      });
+    </script>
+  </body>
+</html>
