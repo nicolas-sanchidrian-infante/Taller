@@ -31,7 +31,7 @@ docker compose ps
 
 ## URLs
 
-- API: http://127.0.0.1:8000
+- API: http://127.0.0.1:8000/docs
 - Health: http://127.0.0.1:8000/health
 - Metrics: http://127.0.0.1:8000/metrics
 - Prometheus: http://127.0.0.1:9090

@@ -179,7 +179,18 @@
       }
 
       function renderHistory(){
-        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        let historyRaw = localStorage.getItem(HISTORY_KEY);
+        let history = [];
+        if(historyRaw){
+          try{
+            history = JSON.parse(historyRaw) || [];
+          }catch(err){
+            // corrupted localStorage entry -> remove it and show friendly status
+            localStorage.removeItem(HISTORY_KEY);
+            history = [];
+            if(typeof status !== 'undefined' && status) status.textContent = 'Historial limpiado (formato inválido)';
+          }
+        }
         historyTbody.innerHTML='';
         if(!history.length){
           const tr = document.createElement('tr');
