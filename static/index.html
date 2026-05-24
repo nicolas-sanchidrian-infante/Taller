@@ -5,85 +5,258 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Heart Disease API - UI</title>
     <style>
-      body{font-family:Inter, Arial, sans-serif;max-width:900px;margin:24px auto;color:#111}
-      label{display:block;margin-top:12px}
-      input,select{width:100%;padding:8px;margin-top:4px}
-      button{margin-top:12px;padding:10px 16px}
-      pre{background:#f6f8fa;padding:12px;border-radius:6px;overflow:auto}
+      :root{--bg:#0f1720;--card:#0b1220;--muted:#9aa4b2;--accent:#4f46e5;--success:#10b981}
+      *{box-sizing:border-box}
+      body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:#e6eef6;margin:0;padding:20px}
+      .container{max-width:1000px;margin:0 auto}
+      header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+      h1{font-size:18px;margin:0}
+      .grid{display:grid;grid-template-columns:1fr 360px;gap:16px}
+      .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+      label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+      input,select{width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
       .row{display:flex;gap:12px}
       .col{flex:1}
+      button{background:var(--accent);color:white;border:none;padding:10px 12px;border-radius:8px;cursor:pointer}
+      button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+      pre{background:#07111a;padding:12px;border-radius:6px;overflow:auto;color:#cfe6ff}
+      table{width:100%;border-collapse:collapse;font-size:13px}
+      th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+      .muted{color:var(--muted);font-size:13px}
+      .controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+      .small{font-size:12px;padding:6px 8px}
     </style>
   </head>
   <body>
-    <h1>Heart Disease API — Interfaz</h1>
-    <p>Rellena los datos del paciente y pulsa <strong>Predict</strong>.</p>
+    <div class="container">
+      <header>
+        <h1>Heart Disease — Interfaz</h1>
+        <div class="muted">API: <a href="/docs" style="color:inherit">/docs</a> · Metrics: <a href="/metrics" style="color:inherit">/metrics</a></div>
+      </header>
 
-    <form id="form">
-      <div class="row">
-        <div class="col">
-          <label>Age<input name="age" type="number" value="54" min="1" max="120"/></label>
-        </div>
-        <div class="col">
-          <label>Sex<select name="sex"><option value="1">Male</option><option value="0">Female</option></select></label>
-        </div>
+      <div class="grid">
+        <section class="card">
+          <form id="form">
+            <div class="row">
+              <div class="col"><label>Age<input name="age" type="number" value="54" min="1" max="120" required/></label></div>
+              <div class="col"><label>Sex<select name="sex"><option value="1">Male</option><option value="0">Female</option></select></label></div>
+            </div>
+
+            <div class="row">
+              <div class="col"><label>Chest Pain<input name="chest_pain" type="number" value="3" min="1" max="4" required/></label></div>
+              <div class="col"><label>Rest BP<input name="rest_blood_pressure" type="number" value="130" min="50" max="250" required/></label></div>
+            </div>
+
+            <div class="row">
+              <div class="col"><label>Cholesterol<input name="cholesterol" type="number" value="250" min="100" max="600" required/></label></div>
+              <div class="col"><label>Fasting BS<select name="fasting_blood_sugar"><option value="0">0</option><option value="1">1</option></select></label></div>
+            </div>
+
+            <div class="row">
+              <div class="col"><label>Rest ECG<select name="rest_ecg"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></label></div>
+              <div class="col"><label>Max HR<input name="max_heart_rate" type="number" value="150" min="60" max="220" required/></label></div>
+            </div>
+
+            <div class="row">
+              <div class="col"><label>Exercise Angina<select name="exercise_angina"><option value="0">0</option><option value="1">1</option></select></label></div>
+              <div class="col"><label>Oldpeak<input name="oldpeak" step="0.1" type="number" value="1.2" min="0" max="10" required/></label></div>
+            </div>
+
+            <div class="row">
+              <div class="col"><label>Slope<select name="slope"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+              <div class="col"><label>Vessels<input name="vessels" type="number" value="0" min="0" max="3" required/></label></div>
+            </div>
+
+            <label>Thal<select name="thal"><option value="3">3</option><option value="6">6</option><option value="7">7</option></select></label>
+
+            <div class="controls">
+              <button id="btn" class="small">Predict</button>
+              <button id="batch" type="button" class="small secondary">Predict x10</button>
+              <button id="load" type="button" class="small secondary">Cargar recientes</button>
+              <span class="muted" id="status">—</span>
+            </div>
+          </form>
+
+          <h3 style="margin-top:12px">Último resultado</h3>
+          <div id="resultCard" style="display:block;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div>
+                <div id="predLabel" style="font-size:20px;font-weight:600">—</div>
+                <div class="muted" style="font-size:13px;margin-top:4px">Predicción</div>
+              </div>
+              <div style="text-align:right">
+                <div id="riskBadge" style="display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.04);color:var(--muted)">—</div>
+                <div class="muted" style="font-size:12px;margin-top:6px">Riesgo</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <div class="muted" style="font-size:13px">Confianza</div>
+              <div style="background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;margin-top:6px">
+                <div id="confidenceBar" style="height:14px;width:0%;background:var(--success);transition:width .5s"></div>
+              </div>
+              <div id="confidenceText" class="muted" style="margin-top:6px;font-size:13px">—</div>
+            </div>
+
+            <div style="margin-top:12px">
+              <div class="muted" style="font-size:13px">Probabilidades</div>
+              <ul id="probsList" style="margin:6px 0 0 14px;padding:0;font-size:13px;color:#cfe6ff"></ul>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <h3 style="margin-top:0">Historial (últimos 25)</h3>
+          <div style="max-height:540px;overflow:auto;margin-top:8px">
+            <table id="history"><thead><tr><th>#</th><th>ts</th><th>pred</th><th>conf</th><th>input</th></tr></thead><tbody></tbody></table>
+          </div>
+        </aside>
       </div>
-
-      <div class="row">
-        <div class="col"><label>Chest Pain (1-4)<input name="chest_pain" type="number" value="3" min="1" max="4"/></label></div>
-        <div class="col"><label>Rest BP<input name="rest_blood_pressure" type="number" value="130" min="50" max="250"/></label></div>
-      </div>
-
-      <div class="row">
-        <div class="col"><label>Colesterol<input name="cholesterol" type="number" value="250" min="100" max="600"/></label></div>
-        <div class="col"><label>Fasting BS<select name="fasting_blood_sugar"><option value="0">0</option><option value="1">1</option></select></label></div>
-      </div>
-
-      <div class="row">
-        <div class="col"><label>Rest ECG<select name="rest_ecg"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></label></div>
-        <div class="col"><label>Max HR<input name="max_heart_rate" type="number" value="150" min="60" max="220"/></label></div>
-      </div>
-
-      <div class="row">
-        <div class="col"><label>Exercise Angina<select name="exercise_angina"><option value="0">0</option><option value="1">1</option></select></label></div>
-        <div class="col"><label>Oldpeak<input name="oldpeak" step="0.1" type="number" value="1.2" min="0" max="10"/></label></div>
-      </div>
-
-      <div class="row">
-        <div class="col"><label>Slope<select name="slope"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
-        <div class="col"><label>Vessels<input name="vessels" type="number" value="0" min="0" max="3"/></label></div>
-      </div>
-
-      <label>Thal<select name="thal"><option value="3">3</option><option value="6">6</option><option value="7">7</option></select></label>
-
-      <button id="btn">Predict</button>
-    </form>
-
-    <h3>Resultado</h3>
-    <pre id="result">—</pre>
+    </div>
 
     <script>
       const form = document.getElementById('form');
       const result = document.getElementById('result');
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+      const status = document.getElementById('status');
+      const historyTbody = document.querySelector('#history tbody');
+      const predLabel = document.getElementById('predLabel');
+      const confidenceBar = document.getElementById('confidenceBar');
+      const confidenceText = document.getElementById('confidenceText');
+      const riskBadge = document.getElementById('riskBadge');
+      const probsList = document.getElementById('probsList');
+      const HISTORY_KEY = 'heart_disease_recent_predictions';
+
+      function toJSONForm(form){
         const data = Object.fromEntries(new FormData(form).entries());
-        for (const k in data) {
+        for (const k in data){
           const el = form.elements[k];
-          if (el.type === 'number' || el.type === 'range') data[k] = Number(data[k]);
+          if (!el) continue;
+          if (el.type==='number' || el.type==='range') data[k]=Number(data[k]);
         }
-        result.textContent = 'Enviando...';
-        try {
-          const r = await fetch('/predict', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(data)
-          });
+        return data;
+      }
+
+      function renderResult(j){
+        // Prediction label
+        predLabel.textContent = j.prediction_label || j.prediction || '—';
+        // Confidence
+        const confidence = Math.round((j.confidence||0) * 100);
+        confidenceBar.style.width = confidence + '%';
+        confidenceText.textContent = `${confidence}%`;
+        // Risk badge color
+        const risk = (j.risk_level||'').toLowerCase();
+        let bg = 'rgba(255,255,255,0.04)';
+        if(risk.includes('high')) bg = 'rgba(239,68,68,0.9)';
+        else if(risk.includes('medium')) bg = 'rgba(250,204,21,0.9)';
+        else if(risk.includes('low')) bg = 'rgba(16,185,129,0.9)';
+        riskBadge.style.background = bg;
+        riskBadge.style.color = '#051018';
+        riskBadge.textContent = j.risk_level || '—';
+        // Probabilities
+        probsList.innerHTML = '';
+        if(j.probabilities){
+          for(const k of Object.keys(j.probabilities)){
+            const li = document.createElement('li');
+            const pct = Math.round(j.probabilities[k]*100);
+            li.textContent = `${k}: ${pct}%`;
+            probsList.appendChild(li);
+          }
+        }
+      }
+
+      function saveToHistory(payload, response){
+        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        history.unshift({
+          id: Date.now(),
+          timestamp: new Date().toLocaleString(),
+          prediction_label: response.prediction_label,
+          confidence: response.confidence,
+          risk_level: response.risk_level,
+          input_json: JSON.stringify(payload)
+        });
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 25)));
+        renderHistory();
+      }
+
+      function renderHistory(){
+        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        historyTbody.innerHTML='';
+        if(!history.length){
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td colspan="5" class="muted">Aún no hay predicciones guardadas en este navegador</td>';
+          historyTbody.appendChild(tr);
+          return;
+        }
+        history.forEach((p)=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${p.id}</td>
+            <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.timestamp}</td>
+            <td>${p.prediction_label || '—'}</td>
+            <td>${Number(p.confidence || 0).toFixed(2)}</td>
+            <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.risk_level || '—'}</td>
+          `;
+          historyTbody.appendChild(tr);
+        });
+      }
+
+      async function callPredict(payload){
+        status.textContent = 'Enviando...';
+        try{
+          const r = await fetch('/predict', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
           const j = await r.json();
-          result.textContent = JSON.stringify(j, null, 2);
-        } catch (err) {
-          result.textContent = 'Error: ' + err;
+          renderResult(j);
+          saveToHistory(payload, j);
+          status.textContent = 'OK';
+          return j;
+        }catch(e){
+          // show error in result area
+          predLabel.textContent = 'Error';
+          confidenceBar.style.width = '0%';
+          confidenceText.textContent = '';
+          riskBadge.textContent = '—';
+          probsList.innerHTML = '';
+          status.textContent = 'Error';
+          throw e;
+        }
+      }
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const payload = toJSONForm(form);
+        await callPredict(payload);
+      });
+
+      document.getElementById('batch').addEventListener('click', async ()=>{
+        const payload = toJSONForm(form);
+        const patients = Array.from({length:10},()=>payload);
+        status.textContent='Enviando batch...';
+        try{
+          const r = await fetch('/predict/batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({patients})});
+          const j = await r.json();
+          predLabel.textContent = `Batch de ${j.count || 10} predicciones`;
+          confidenceBar.style.width = '100%';
+          confidenceText.textContent = `Tiempo total: ${j.total_inference_time_ms ?? '—'} ms`;
+          riskBadge.textContent = 'Batch';
+          riskBadge.style.background = 'rgba(79,70,229,0.9)';
+          riskBadge.style.color = '#051018';
+          probsList.innerHTML = '<li>Revisa el historial local después del batch</li>';
+          status.textContent='Batch OK';
+        }catch(e){
+          predLabel.textContent = 'Error';
+          confidenceBar.style.width = '0%';
+          confidenceText.textContent = 'Batch no disponible';
+          status.textContent='Error';
         }
       });
+
+      document.getElementById('load').addEventListener('click', ()=>{
+        renderHistory();
+        status.textContent='Historial local cargado';
+      });
+
+      // Auto-load on open
+      renderHistory();
     </script>
   </body>
 </html>
