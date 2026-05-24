@@ -117,6 +117,3 @@ El workflow `.github/workflows/ci.yml`:
 
 Publicar la imagen en GitHub Container Registry, usa el workflow adicional `docker-publish.yml`.
 
-
-git remote add origin enlace del repo
-git push -u origin main
